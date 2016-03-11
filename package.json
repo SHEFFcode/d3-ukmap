@@ -1,0 +1,27 @@
+{
+  "name": "uk-map",
+  "version": "1.0.0",
+  "description": "d3.js map of uk",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SHEFFcode/d3-ukmap.git"
+  },
+  "keywords": [
+    "d3",
+    "uk",
+    "map"
+  ],
+  "author": "Jeremy Sherer",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SHEFFcode/d3-ukmap/issues"
+  },
+  "homepage": "https://github.com/SHEFFcode/d3-ukmap#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
