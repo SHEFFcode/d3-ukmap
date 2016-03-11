@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="description" content="Drawing Shapes W/ D3 -"/>
+  <meta charset="utf-8">
+  <title>Building a Map with GEOJSON</title>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  
+  <style type="text/css">
+      .subunitSCT { fill: gold; }
+      .subunitNIR { fill: #3162b2; }
+      .subunitENG { fill: #5f9CFF; }
+      .subunitIRL { fill: #46b24a; }
+      div.tooltip {   
+      position: absolute;           
+      text-align: center;           
+      width: 100px;                  
+      height: 16px;
+      line-height: 20px;
+      padding: 2px;             
+      font: 12px sans-serif;
+      background: #000;
+      color: #fff;
+      border: 0px;      
+      border-radius: 6px;           
+      pointer-events: none;         
+    }
+  </style>
+
+  </head>
+  <body>
+
+      <script>
+      var width = 500;
+      var height = 660;
+      var Data;
+      d3.json("data/united_kingdom.json", function(error, uk) {
+            if (error) return console.error(error);
+            console.log(uk);
+            
+            //establish svg
+        var svg = d3.select("body").append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+          //accessing the subunits in a variable to present as the datum for paths to be appended
+        var subunits = topojson.feature(uk, uk.objects.subunits);
+          //establish what projection we're going to use to map the UK on to
+          
+        var projection = d3.geo.conicConformal()
+          .center([0,55.4])
+          .rotate([4.4, 0])
+          .parallels([50, 60])
+          .scale(3500)
+          .translate([width/2, height/ 2]);
+         //generating out path
+         var path = d3.geo.path()
+          .projection(projection);
+          //appending our path
+          svg.append("path")
+              .datum(subunits)
+              .attr("d", path);
+          //Append countries of UK
+          svg.selectAll('.subunit')
+            .data(topojson.feature(uk, uk.objects.subunits).features)
+            .enter().append('path')
+            .attr('class', function(d) { return 'subunit' + d.id })
+            .attr('d', path);
+          
+          var div = d3.select("body").append("div")   
+                .attr("class", "tooltip")               
+                .style("opacity", 0);
+          
+          //Appen place names
+           svg.selectAll('.place')
+            .data(topojson.feature(uk, uk.objects.places).features)
+            .enter().append('path')
+            .attr('class', function(d) { return d.type })
+            .attr('fill', 'purple')
+            .attr('d', path)
+            .on("mouseover", function(d) {      
+                div.transition()        
+                    .duration(200)      
+                    .style("opacity", .9);      
+                div .html(d.properties.name)  
+                    .style("left", (d3.event.pageX) + "px")     
+                    .style("top", (d3.event.pageY - 28) + "px");  
+               console.log(d.properties.name);
+            })                  
+            .on("mouseout", function(d) {       
+                div.transition()        
+                    .duration(500)      
+                    .style("opacity", 0);   
+            });;
+
+      });
+
+      </script>
+  </body>
+</html>
